@@ -134,7 +134,7 @@ MONGO_URI=your_mongodb_connection_string
 - [x] Worker Model
 - [x] Add Worker API
 - [x] Get Workers API
-- [ ] Attendance System
+- [x] Attendance System
 - [ ] Authentication
 - [ ] Frontend Development
 - [ ] Deployment
