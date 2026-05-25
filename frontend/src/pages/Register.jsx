@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
@@ -6,6 +7,9 @@ function Register() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+  
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -18,6 +22,8 @@ function Register() {
       });
 
       localStorage.setItem("token", res.data.token);
+
+      navigate("/dashboard");
 
       alert("Registration Successful");
     } catch (error) {

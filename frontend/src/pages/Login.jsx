@@ -1,32 +1,30 @@
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
 function Login() {
   const [phone, setPhone] = useState("");
-  const [password, setPassword] =
-    useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        {
-          phone,
-          password,
-        }
-      );
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        phone,
+        password,
+      });
 
-      localStorage.setItem(
-        "token",
-        res.data.token
-      );
+      localStorage.setItem("token", res.data.token);
+
+      navigate("/dashboard");
 
       alert("Login Successful");
     } catch (error) {
-      alert("Login Failed");
+        alert("Login Failed");
     }
   };
 
@@ -44,9 +42,7 @@ function Login() {
           type="text"
           placeholder="Phone Number"
           value={phone}
-          onChange={(e) =>
-            setPhone(e.target.value)
-          }
+          onChange={(e) => setPhone(e.target.value)}
           className="w-full border p-3 rounded mb-4"
         />
 
@@ -54,9 +50,7 @@ function Login() {
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
+          onChange={(e) => setPassword(e.target.value)}
           className="w-full border p-3 rounded mb-4"
         />
 
@@ -66,6 +60,13 @@ function Login() {
         >
           Login
         </button>
+
+        <p className="mt-4 text-center">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-blue-500">
+            Register
+          </Link>
+        </p>
       </form>
     </div>
   );
