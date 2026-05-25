@@ -8,6 +8,7 @@ const addWorker = async (req, res) => {
       name,
       phone,
       dailyWage,
+      contractorId: req.user._id,
     });
 
     res.status(201).json(worker);
@@ -20,7 +21,9 @@ const addWorker = async (req, res) => {
 
 const getWorker = async (req, res) => {
   try {
-    const workers = await Worker.find();
+    const workers = await Worker.find({
+        contractorId: req.user._id,
+    });
 
     res.status(200).json(workers);
   } catch (error) {

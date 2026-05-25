@@ -6,9 +6,10 @@ const {
   addWorker,
   getWorker,
 } = require("../controllers/workerController");
+const { protect } = require("../middleware/authMiddleware");
 
-router.post("/", addWorker);
+router.post("/", protect, addWorker);
 
-router.get("/", getWorker);
+router.get("/", protect, getWorker);
 
 module.exports = router;
