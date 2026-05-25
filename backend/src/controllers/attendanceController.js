@@ -28,6 +28,20 @@ const markAttendance = async (req, res) => {
   }
 };
 
+const getAttendance = async (req, res) => {
+  try {
+    const attendance = await Attendance.find()
+      .populate("workerId");
+
+    res.status(200).json(attendance);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   markAttendance,
+  getAttendance,
 };
