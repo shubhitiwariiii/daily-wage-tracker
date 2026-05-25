@@ -1,7 +1,15 @@
-import Login from "./pages/Login";
+// import Login from "./pages/Login";
+
+// function App() {
+//   return <Login />;
+// }
+
+// export default App;
+
+import Register from "./pages/Register";
 
 function App() {
-  return <Login />;
+  return <Register />;
 }
 
 export default App;
