@@ -41,7 +41,41 @@ const getAttendance = async (req, res) => {
   }
 };
 
+const getWorkerSummary = async (req, res) => {
+  try {
+    const { workerId } = req.params;
+
+    const attendance = await Attendance.find({
+      workerId,
+    });
+
+    const totalPresent = attendance.filter(
+      (item) => item.status === "Present"
+    ).length;
+
+    const totalAbsent = attendance.filter(
+      (item) => item.status === "Absent"
+    ).length;
+
+    const totalWages = attendance.reduce(
+      (sum, item) => sum + item.wageForDay,
+      0
+    );
+
+    res.status(200).json({
+      totalPresent,
+      totalAbsent,
+      totalWages,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   markAttendance,
   getAttendance,
+  getWorkerSummary,
 };
