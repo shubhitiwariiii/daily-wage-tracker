@@ -1,30 +1,23 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
 function Register() {
   const [name, setName] = useState("");
-  const [phone, setPhone] =
-    useState("");
-  const [password, setPassword] =
-    useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/register",
-        {
-          name,
-          phone,
-          password,
-        }
-      );
+      const res = await axios.post("http://localhost:5000/api/auth/register", {
+        name,
+        phone,
+        password,
+      });
 
-      localStorage.setItem(
-        "token",
-        res.data.token
-      );
+      localStorage.setItem("token", res.data.token);
 
       alert("Registration Successful");
     } catch (error) {
@@ -46,9 +39,7 @@ function Register() {
           type="text"
           placeholder="Name"
           value={name}
-          onChange={(e) =>
-            setName(e.target.value)
-          }
+          onChange={(e) => setName(e.target.value)}
           className="w-full border p-3 rounded mb-4"
         />
 
@@ -56,9 +47,7 @@ function Register() {
           type="text"
           placeholder="Phone Number"
           value={phone}
-          onChange={(e) =>
-            setPhone(e.target.value)
-          }
+          onChange={(e) => setPhone(e.target.value)}
           className="w-full border p-3 rounded mb-4"
         />
 
@@ -66,9 +55,7 @@ function Register() {
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
+          onChange={(e) => setPassword(e.target.value)}
           className="w-full border p-3 rounded mb-4"
         />
 
@@ -78,6 +65,13 @@ function Register() {
         >
           Register
         </button>
+
+        <p className="mt-4 text-center">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-500">
+            Login
+          </Link>
+        </p>
       </form>
     </div>
   );
