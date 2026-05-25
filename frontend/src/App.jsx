@@ -1,9 +1,7 @@
+import Login from "./pages/Login";
+
 function App() {
-  return (
-    <div className="text-3xl font-bold p-10">
-      Daily Wage Tracker
-    </div>
-  );
+  return <Login />;
 }
 
 export default App;
