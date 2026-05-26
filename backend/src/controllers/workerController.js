@@ -33,7 +33,32 @@ const getWorker = async (req, res) => {
   }
 };
 
+const deleteWorker = async (req, res) => {
+  try {
+    const worker = await Worker.findById(
+      req.params.id
+    );
+
+    if (!worker) {
+      return res.status(404).json({
+        message: "Worker not found",
+      });
+    }
+
+    await worker.deleteOne();
+
+    res.status(200).json({
+      message: "Worker deleted",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   addWorker,
   getWorker,
+  deleteWorker,
 };

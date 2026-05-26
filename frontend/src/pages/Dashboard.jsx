@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -6,23 +6,61 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
-  const [phone, setPhone] =
-    useState("");
-  const [dailyWage, setDailyWage] =
-    useState("");
+  const [phone, setPhone] = useState("");
+  const [dailyWage, setDailyWage] = useState("");
+  const [workers, setWorkers] = useState([]);
 
+  // Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
-
     navigate("/login");
   };
 
+  // Fetch workers
+  const fetchWorkers = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get("http://localhost:5000/api/workers", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setWorkers(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //delete workers
+  const handleDeleteWorker = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.delete(`http://localhost:5000/api/workers/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      fetchWorkers();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Load workers on page load
+  useEffect(() => {
+    fetchWorkers();
+  }, []);
+
+  // Add worker
   const handleAddWorker = async (e) => {
     e.preventDefault();
 
     try {
-      const token =
-        localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       await axios.post(
         "http://localhost:5000/api/workers",
@@ -35,25 +73,30 @@ function Dashboard() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       alert("Worker Added");
 
+      // Refresh workers list
+      fetchWorkers();
+
+      // Clear form
       setName("");
       setPhone("");
       setDailyWage("");
     } catch (error) {
+      console.log(error);
+
       alert("Failed to add worker");
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
+      {/* Header */}
       <div className="bg-white p-6 rounded-xl shadow-md flex justify-between items-center">
-        <h1 className="text-3xl font-bold">
-          Contractor Dashboard
-        </h1>
+        <h1 className="text-3xl font-bold">Contractor Dashboard</h1>
 
         <button
           onClick={handleLogout}
@@ -63,19 +106,16 @@ function Dashboard() {
         </button>
       </div>
 
+      {/* Add Worker Form */}
       <div className="mt-8 bg-white p-6 rounded-xl shadow-md max-w-lg">
-        <h2 className="text-2xl font-semibold mb-4">
-          Add Worker
-        </h2>
+        <h2 className="text-2xl font-semibold mb-4">Add Worker</h2>
 
         <form onSubmit={handleAddWorker}>
           <input
             type="text"
             placeholder="Worker Name"
             value={name}
-            onChange={(e) =>
-              setName(e.target.value)
-            }
+            onChange={(e) => setName(e.target.value)}
             className="w-full border p-3 rounded mb-4"
           />
 
@@ -83,9 +123,7 @@ function Dashboard() {
             type="text"
             placeholder="Phone Number"
             value={phone}
-            onChange={(e) =>
-              setPhone(e.target.value)
-            }
+            onChange={(e) => setPhone(e.target.value)}
             className="w-full border p-3 rounded mb-4"
           />
 
@@ -93,9 +131,7 @@ function Dashboard() {
             type="number"
             placeholder="Daily Wage"
             value={dailyWage}
-            onChange={(e) =>
-              setDailyWage(e.target.value)
-            }
+            onChange={(e) => setDailyWage(e.target.value)}
             className="w-full border p-3 rounded mb-4"
           />
 
@@ -106,6 +142,29 @@ function Dashboard() {
             Add Worker
           </button>
         </form>
+      </div>
+
+      {/* Workers List */}
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold mb-4">Workers List</h2>
+
+        <div className="grid gap-4">
+          {workers.map((worker) => (
+            <div key={worker._id} className="bg-white p-4 rounded-xl shadow-md">
+              <h3 className="text-xl font-semibold">{worker.name}</h3>
+
+              <p>Phone: {worker.phone}</p>
+
+              <p>Daily Wage: ₹{worker.dailyWage}</p>
+              <button
+                onClick={() => handleDeleteWorker(worker._id)}
+                className="mt-3 bg-red-500 text-white px-4 py-2 rounded"
+              >
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
