@@ -1,12 +1,51 @@
+import { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const navigate = useNavigate();
 
+  const [name, setName] = useState("");
+  const [phone, setPhone] =
+    useState("");
+  const [dailyWage, setDailyWage] =
+    useState("");
+
   const handleLogout = () => {
     localStorage.removeItem("token");
 
     navigate("/login");
+  };
+
+  const handleAddWorker = async (e) => {
+    e.preventDefault();
+
+    try {
+      const token =
+        localStorage.getItem("token");
+
+      await axios.post(
+        "http://localhost:5000/api/workers",
+        {
+          name,
+          phone,
+          dailyWage,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("Worker Added");
+
+      setName("");
+      setPhone("");
+      setDailyWage("");
+    } catch (error) {
+      alert("Failed to add worker");
+    }
   };
 
   return (
@@ -24,14 +63,49 @@ function Dashboard() {
         </button>
       </div>
 
-      <div className="mt-8 bg-white p-6 rounded-xl shadow-md">
+      <div className="mt-8 bg-white p-6 rounded-xl shadow-md max-w-lg">
         <h2 className="text-2xl font-semibold mb-4">
-          Welcome 👋
+          Add Worker
         </h2>
 
-        <p>
-          Daily Wage Tracker Dashboard
-        </p>
+        <form onSubmit={handleAddWorker}>
+          <input
+            type="text"
+            placeholder="Worker Name"
+            value={name}
+            onChange={(e) =>
+              setName(e.target.value)
+            }
+            className="w-full border p-3 rounded mb-4"
+          />
+
+          <input
+            type="text"
+            placeholder="Phone Number"
+            value={phone}
+            onChange={(e) =>
+              setPhone(e.target.value)
+            }
+            className="w-full border p-3 rounded mb-4"
+          />
+
+          <input
+            type="number"
+            placeholder="Daily Wage"
+            value={dailyWage}
+            onChange={(e) =>
+              setDailyWage(e.target.value)
+            }
+            className="w-full border p-3 rounded mb-4"
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-black text-white p-3 rounded"
+          >
+            Add Worker
+          </button>
+        </form>
       </div>
     </div>
   );
