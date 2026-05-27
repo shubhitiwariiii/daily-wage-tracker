@@ -50,6 +50,31 @@ function Dashboard() {
     }
   };
 
+  const handleAttendance = async (workerId, status) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.post(
+        "http://localhost:5000/api/attendance",
+        {
+          workerId,
+          status,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      alert(`Attendance marked ${status}`);
+    } catch (error) {
+      console.log(error);
+
+      alert("Failed to mark attendance");
+    }
+  };
+
   // Load workers on page load
   useEffect(() => {
     fetchWorkers();
@@ -152,9 +177,7 @@ function Dashboard() {
           {workers.map((worker) => (
             <div key={worker._id} className="bg-white p-4 rounded-xl shadow-md">
               <h3 className="text-xl font-semibold">{worker.name}</h3>
-
               <p>Phone: {worker.phone}</p>
-
               <p>Daily Wage: ₹{worker.dailyWage}</p>
               <button
                 onClick={() => handleDeleteWorker(worker._id)}
@@ -162,6 +185,21 @@ function Dashboard() {
               >
                 Delete
               </button>
+              <div className="flex gap-2 mt-3">
+                <button
+                  onClick={() => handleAttendance(worker._id, "Present")}
+                  className="bg-green-500 text-white px-4 py-2 rounded"
+                >
+                  Present
+                </button>
+
+                <button
+                  onClick={() => handleAttendance(worker._id, "Absent")}
+                  className="bg-yellow-500 text-white px-4 py-2 rounded"
+                >
+                  Absent
+                </button>
+              </div>
             </div>
           ))}
         </div>
