@@ -154,7 +154,7 @@ function Dashboard() {
 
         <button
           onClick={handleLogout}
-          className="bg-black text-white px-4 py-2 rounded"
+          className="bg-black text-white px-4 py-2 rounded-lg"
         >
           Logout
         </button>
@@ -217,7 +217,7 @@ function Dashboard() {
 
           <button
             type="submit"
-            className="w-full bg-black text-white p-3 rounded"
+            className="w-full bg-black text-white p-3 rounded-lg"
           >
             Add Worker
           </button>
@@ -229,36 +229,44 @@ function Dashboard() {
         <h2 className="text-2xl font-bold mb-4">Workers List</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {workers.map((worker) => (
-            <div key={worker._id} className="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition">
-              <h3 className="text-xl font-semibold">{worker.name}</h3>
-              <p className="text-lg mt-2">Phone: {worker.phone}</p>
-              <p className="text-lg">Daily Wage: ₹{worker.dailyWage}</p>
+          {workers.length === 0 ? (
+            <p className="text-gray-500">No workers added yet.</p>
+          ) : (
+            workers.map((worker) => (
+              // existing card
+              <div
+                key={worker._id}
+                className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition"
+              >
+                <h3 className="text-2xl font-bold mb-2">{worker.name}</h3>
+                <p className="text-lg mt-2">Phone: {worker.phone}</p>
+                <p className="text-lg">Daily Wage: ₹{worker.dailyWage}</p>
 
-              <div className="flex gap-3 mt-4 flex-wrap">
-                <button
-                  onClick={() => handleDeleteWorker(worker._id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded"
-                >
-                  Delete
-                </button>
+                <div className="flex gap-3 mt-4 flex-wrap">
+                  <button
+                    onClick={() => handleDeleteWorker(worker._id)}
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg"
+                  >
+                    Delete
+                  </button>
 
-                <button
-                  onClick={() => handleAttendance(worker._id, "Present")}
-                  className="bg-green-500 text-white px-4 py-2 rounded"
-                >
-                  Present
-                </button>
+                  <button
+                    onClick={() => handleAttendance(worker._id, "Present")}
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                  >
+                    Present
+                  </button>
 
-                <button
-                  onClick={() => handleAttendance(worker._id, "Absent")}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded"
-                >
-                  Absent
-                </button>
+                  <button
+                    onClick={() => handleAttendance(worker._id, "Absent")}
+                    className="bg-yellow-500 text-white px-4 py-2 rounded-lg"
+                  >
+                    Absent
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>
