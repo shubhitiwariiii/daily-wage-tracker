@@ -9,6 +9,7 @@ function Dashboard() {
   const [phone, setPhone] = useState("");
   const [dailyWage, setDailyWage] = useState("");
   const [workers, setWorkers] = useState([]);
+  const [attendance, setAttendance] = useState([]);
 
   // Logout
   const handleLogout = () => {
@@ -28,6 +29,22 @@ function Dashboard() {
       });
 
       setWorkers(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchAttendance = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get("http://localhost:5000/api/attendance", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setAttendance(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -68,6 +85,7 @@ function Dashboard() {
       );
 
       alert(`Attendance marked ${status}`);
+      fetchAttendance();
     } catch (error) {
       console.log(error);
 
@@ -78,6 +96,7 @@ function Dashboard() {
   // Load workers on page load
   useEffect(() => {
     fetchWorkers();
+    fetchAttendance();
   }, []);
 
   // Add worker
@@ -117,6 +136,16 @@ function Dashboard() {
     }
   };
 
+  const totalPresent = attendance.filter(
+    (item) => item.status === "Present",
+  ).length;
+
+  const totalAbsent = attendance.filter(
+    (item) => item.status === "Absent",
+  ).length;
+
+  const totalWages = attendance.reduce((sum, item) => sum + item.wageForDay, 0);
+
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       {/* Header */}
@@ -129,6 +158,32 @@ function Dashboard() {
         >
           Logout
         </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-xl font-bold">Total Workers</h2>
+
+          <p className="text-3xl mt-2">{workers.length}</p>
+        </div>
+
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-xl font-bold">Present</h2>
+
+          <p className="text-3xl mt-2 text-green-600">{totalPresent}</p>
+        </div>
+
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-xl font-bold">Absent</h2>
+
+          <p className="text-3xl mt-2 text-yellow-600">{totalAbsent}</p>
+        </div>
+
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-xl font-bold">Total Wages</h2>
+
+          <p className="text-3xl mt-2">₹{totalWages}</p>
+        </div>
       </div>
 
       {/* Add Worker Form */}
