@@ -136,15 +136,40 @@ function Dashboard() {
     }
   };
 
+  const today = new Date().toLocaleDateString();
+
   const totalPresent = attendance.filter(
-    (item) => item.status === "Present",
+    (item) =>
+      item.workerId &&
+      item.status === "Present" &&
+      new Date(item.date).toLocaleDateString() === today,
   ).length;
 
   const totalAbsent = attendance.filter(
-    (item) => item.status === "Absent",
+    (item) =>
+      item.workerId &&
+      item.status === "Absent" &&
+      new Date(item.date).toLocaleDateString() === today,
   ).length;
 
-  const totalWages = attendance.reduce((sum, item) => sum + item.wageForDay, 0);
+  const currentMonth = new Date().getMonth();
+
+  const currentYear = new Date().getFullYear();
+
+  const totalWages = attendance
+    .filter((item) => {
+      if (!item.workerId || item.status !== "Present" || !item.date) {
+        return false;
+      }
+
+      const attendanceDate = new Date(item.date);
+
+      return (
+        attendanceDate.getMonth() === currentMonth &&
+        attendanceDate.getFullYear() === currentYear
+      );
+    })
+    .reduce((sum, item) => sum + item.wageForDay, 0);
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">

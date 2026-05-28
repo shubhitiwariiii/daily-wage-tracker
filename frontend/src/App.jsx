@@ -1,4 +1,5 @@
 import ProtectedRoute from "./components/ProtectedRoute";
+import WorkerLogin from "./pages/WorkerLogin";
 import Dashboard from "./pages/Dashboard";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
@@ -21,7 +22,9 @@ function App() {
           }
         />
         <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="/worker-login" element={<WorkerLogin />} />
       </Routes>
+      
     </BrowserRouter>
   );
 }
