@@ -147,7 +147,7 @@ function Dashboard() {
   const totalWages = attendance.reduce((sum, item) => sum + item.wageForDay, 0);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-50 p-8">
       {/* Header */}
       <div className="bg-white p-6 rounded-xl shadow-md flex justify-between items-center">
         <h1 className="text-3xl font-bold">Contractor Dashboard</h1>
@@ -228,19 +228,21 @@ function Dashboard() {
       <div className="mt-8">
         <h2 className="text-2xl font-bold mb-4">Workers List</h2>
 
-        <div className="grid gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {workers.map((worker) => (
-            <div key={worker._id} className="bg-white p-4 rounded-xl shadow-md">
+            <div key={worker._id} className="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition">
               <h3 className="text-xl font-semibold">{worker.name}</h3>
-              <p>Phone: {worker.phone}</p>
-              <p>Daily Wage: ₹{worker.dailyWage}</p>
-              <button
-                onClick={() => handleDeleteWorker(worker._id)}
-                className="mt-3 bg-red-500 text-white px-4 py-2 rounded"
-              >
-                Delete
-              </button>
-              <div className="flex gap-2 mt-3">
+              <p className="text-lg mt-2">Phone: {worker.phone}</p>
+              <p className="text-lg">Daily Wage: ₹{worker.dailyWage}</p>
+
+              <div className="flex gap-3 mt-4 flex-wrap">
+                <button
+                  onClick={() => handleDeleteWorker(worker._id)}
+                  className="bg-red-500 text-white px-4 py-2 rounded"
+                >
+                  Delete
+                </button>
+
                 <button
                   onClick={() => handleAttendance(worker._id, "Present")}
                   className="bg-green-500 text-white px-4 py-2 rounded"
