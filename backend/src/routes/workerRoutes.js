@@ -6,6 +6,7 @@ const {
   addWorker,
   getWorker,
   deleteWorker,
+  getWorkerByPhone,
 } = require("../controllers/workerController");
 const { protect } = require("../middleware/authMiddleware");
 
@@ -14,5 +15,7 @@ router.post("/", protect, addWorker);
 router.get("/", protect, getWorker);
 
 router.delete("/:id", protect, deleteWorker);
+
+router.get("/phone/:phone",getWorkerByPhone);
 
 module.exports = router;

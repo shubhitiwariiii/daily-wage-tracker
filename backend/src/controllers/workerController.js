@@ -60,8 +60,33 @@ const deleteWorker = async (req, res) => {
   }
 };
 
+const getWorkerByPhone = async (
+  req,
+  res
+) => {
+  try {
+    const worker =
+      await Worker.findOne({
+        phone: req.params.phone,
+      });
+
+    if (!worker) {
+      return res.status(404).json({
+        message: "Worker not found",
+      });
+    }
+
+    res.status(200).json(worker);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   addWorker,
   getWorker,
   deleteWorker,
+  getWorkerByPhone,
 };
