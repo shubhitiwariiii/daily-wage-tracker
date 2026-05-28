@@ -224,6 +224,50 @@ function Dashboard() {
         </form>
       </div>
 
+      <div className="mt-10">
+        <h2 className="text-2xl font-bold mb-4">Attendance History</h2>
+
+        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-black text-white">
+              <tr>
+                <th className="p-4 text-left">Worker</th>
+
+                <th className="p-4 text-left">Status</th>
+
+                <th className="p-4 text-left">Wage</th>
+
+                <th className="p-4 text-left">Date</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {attendance.map((item) => (
+                <tr key={item._id} className="border-b">
+                  <td className="p-4">{item.workerId?.name}</td>
+
+                  <span
+                    className={
+                      item.status === "Present"
+                        ? "text-green-600 font-bold"
+                        : "text-yellow-600 font-bold"
+                    }
+                  >
+                    {item.status}
+                  </span>
+
+                  <td className="p-4">₹{item.wageForDay}</td>
+
+                  <td className="p-4">
+                    {new Date(item.date).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       {/* Workers List */}
       <div className="mt-8">
         <h2 className="text-2xl font-bold mb-4">Workers List</h2>
