@@ -1,3 +1,4 @@
+const Attendance = require("../models/Attendance");
 const Worker = require("../models/Worker");
 
 const addWorker = async (req, res) => {
@@ -22,7 +23,7 @@ const addWorker = async (req, res) => {
 const getWorker = async (req, res) => {
   try {
     const workers = await Worker.find({
-        contractorId: req.user._id,
+      contractorId: req.user._id,
     });
 
     res.status(200).json(workers);
@@ -35,15 +36,17 @@ const getWorker = async (req, res) => {
 
 const deleteWorker = async (req, res) => {
   try {
-    const worker = await Worker.findById(
-      req.params.id
-    );
+    const worker = await Worker.findById(req.params.id);
 
     if (!worker) {
       return res.status(404).json({
         message: "Worker not found",
       });
     }
+
+    await Attendance.deleteMany({
+      workerId: worker._id,
+    });
 
     await worker.deleteOne();
 

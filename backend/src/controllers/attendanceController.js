@@ -13,11 +13,34 @@ const markAttendance = async (req, res) => {
       });
     }
 
+    const today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    // Check if attendance already exists today
+    const existingAttendance = await Attendance.findOne({
+      workerId,
+
+      date: {
+        $gte: today,
+        $lt: tomorrow,
+      },
+    });
+
+    if (existingAttendance) {
+      return res.status(400).json({
+        message: "Attendance already marked today",
+      });
+    }
+
     const attendance = await Attendance.create({
       workerId,
       status,
-      wageForDay:
-        status === "Present" ? worker.dailyWage : 0,
+      wageForDay: status === "Present" ? worker.dailyWage : 0,
     });
 
     res.status(201).json(attendance);
@@ -30,8 +53,7 @@ const markAttendance = async (req, res) => {
 
 const getAttendance = async (req, res) => {
   try {
-    const attendance = await Attendance.find()
-      .populate("workerId");
+    const attendance = await Attendance.find().populate("workerId");
 
     res.status(200).json(attendance);
   } catch (error) {
@@ -50,16 +72,16 @@ const getWorkerSummary = async (req, res) => {
     });
 
     const totalPresent = attendance.filter(
-      (item) => item.status === "Present"
+      (item) => item.status === "Present",
     ).length;
 
     const totalAbsent = attendance.filter(
-      (item) => item.status === "Absent"
+      (item) => item.status === "Absent",
     ).length;
 
     const totalWages = attendance.reduce(
       (sum, item) => sum + item.wageForDay,
-      0
+      0,
     );
 
     res.status(200).json({

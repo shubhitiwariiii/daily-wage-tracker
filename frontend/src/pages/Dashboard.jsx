@@ -89,7 +89,7 @@ function Dashboard() {
     } catch (error) {
       console.log(error);
 
-      alert("Failed to mark attendance");
+      alert(error.response?.data?.message || "Failed to mark attendance");
     }
   };
 
@@ -242,27 +242,29 @@ function Dashboard() {
             </thead>
 
             <tbody>
-              {attendance.map((item) => (
-                <tr key={item._id} className="border-b">
-                  <td className="p-4">{item.workerId?.name}</td>
+              {attendance
+                .filter((item) => item.workerId)
+                .map((item) => (
+                  <tr key={item._id} className="border-b">
+                    <td className="p-4">{item.workerId?.name}</td>
 
-                  <span
-                    className={
-                      item.status === "Present"
-                        ? "text-green-600 font-bold"
-                        : "text-yellow-600 font-bold"
-                    }
-                  >
-                    {item.status}
-                  </span>
+                    <span
+                      className={
+                        item.status === "Present"
+                          ? "text-green-600 font-bold"
+                          : "text-yellow-600 font-bold"
+                      }
+                    >
+                      {item.status}
+                    </span>
 
-                  <td className="p-4">₹{item.wageForDay}</td>
+                    <td className="p-4">₹{item.wageForDay}</td>
 
-                  <td className="p-4">
-                    {new Date(item.date).toLocaleDateString()}
-                  </td>
-                </tr>
-              ))}
+                    <td className="p-4">
+                      {new Date(item.date).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
