@@ -84,9 +84,27 @@ const getWorkerByPhone = async (
   }
 };
 
+
+const updateWorker = async (req, res) => {
+  try {
+    const worker = await Worker.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    res.json(worker);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   addWorker,
   getWorker,
   deleteWorker,
   getWorkerByPhone,
+  updateWorker,
 };

@@ -3,8 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function WorkerLogin() {
-  const [phone, setPhone] =
-    useState("");
+  const [phone, setPhone] = useState("");
 
   const navigate = useNavigate();
 
@@ -13,27 +12,21 @@ function WorkerLogin() {
 
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/workers/phone/${phone}`
+        `http://localhost:5000/api/workers/phone/${phone}`,
       );
 
-      localStorage.setItem(
-        "worker",
-        JSON.stringify(res.data)
-      );
+      localStorage.setItem("worker", JSON.stringify(res.data));
 
       navigate("/worker-dashboard");
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "Login Failed"
-      );
+      alert(error.response?.data?.message || "Login Failed");
     }
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-50">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <h1 className="text-3xl font-bold mb-6 text-center">
+    <div className="min-h-screen flex justify-center items-center">
+      <div className="bg-gray-50 p-4 md:p-8 rounded-xl shadow-md w-full max-w-md">
+        <h1 className="text-2xl md:text-3xl text-black font-bold mb-6 text-center">
           Worker Login
         </h1>
 
@@ -42,16 +35,11 @@ function WorkerLogin() {
             type="text"
             placeholder="Phone Number"
             value={phone}
-            onChange={(e) =>
-              setPhone(e.target.value)
-            }
-            className="w-full border p-3 rounded-lg mb-4"
+            onChange={(e) => setPhone(e.target.value)}
+            className="w-full border p-3 rounded-lg mb-4 bg-white"
           />
 
-          <button
-            type="submit"
-            className="w-full bg-black text-white p-3 rounded-lg"
-          >
+          <button type="submit" className="w-full bg-black text-white p-3 rounded-lg">
             Login
           </button>
         </form>

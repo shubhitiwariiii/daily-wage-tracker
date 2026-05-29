@@ -24,17 +24,14 @@ function Login() {
 
       alert("Login Successful");
     } catch (error) {
-        alert("Login Failed");
+      alert("Login Failed");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleLogin}
-        className="bg-white p-8 rounded-xl shadow-md w-96"
-      >
-        <h1 className="text-2xl font-bold mb-6 text-center">
+    <div className="min-h-screen flex items-center justify-center">
+      <form onSubmit={handleLogin} className="bg-gray-50 p-8 rounded-xl shadow-md w-96">
+        <h1 className="text-2xl font-bold text-black mb-6 text-center">
           Contractor Login
         </h1>
 
@@ -43,7 +40,7 @@ function Login() {
           placeholder="Phone Number"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="w-full border p-3 rounded mb-4"
+          className="w-full border p-3 rounded-lg mb-4 bg-white"
         />
 
         <input
@@ -51,7 +48,7 @@ function Login() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border p-3 rounded mb-4"
+          className="w-full border p-3 rounded-lg mb-4 bg-white"
         />
 
         <button

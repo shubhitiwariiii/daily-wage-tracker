@@ -9,7 +9,6 @@ function Register() {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -32,12 +31,9 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleRegister}
-        className="bg-white p-8 rounded-xl shadow-md w-96"
-      >
-        <h1 className="text-2xl font-bold mb-6 text-center">
+    <div className="min-h-screen flex items-center justify-center">
+      <form onSubmit={handleRegister} className="bg-gray-50 p-4 md:p-8 rounded-xl shadow-md w-full max-w-md">
+        <h1 className="text-2xl md:text-3xl text-black font-bold mb-6 text-center">
           Contractor Register
         </h1>
 
@@ -46,7 +42,7 @@ function Register() {
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border p-3 rounded mb-4"
+          className="w-full border p-3 rounded-lg mb-4 bg-white"
         />
 
         <input
@@ -54,7 +50,7 @@ function Register() {
           placeholder="Phone Number"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="w-full border p-3 rounded mb-4"
+          className="w-full border p-3 rounded-lg mb-4 bg-white"
         />
 
         <input
@@ -62,13 +58,10 @@ function Register() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border p-3 rounded mb-4"
+          className="w-full border p-3 rounded-lg mb-4 bg-white"
         />
 
-        <button
-          type="submit"
-          className="w-full bg-black text-white p-3 rounded"
-        >
+        <button type="submit" className="w-full bg-black text-white p-3 rounded">
           Register
         </button>
 

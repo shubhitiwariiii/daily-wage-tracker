@@ -10,6 +10,8 @@ function Dashboard() {
   const [dailyWage, setDailyWage] = useState("");
   const [workers, setWorkers] = useState([]);
   const [attendance, setAttendance] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [editingWorker, setEditingWorker] = useState(null);
 
   // Logout
   const handleLogout = () => {
@@ -64,6 +66,33 @@ function Dashboard() {
       fetchWorkers();
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  // Edit worker
+  const handleEditWorker = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      // Simple prompt-based edit - can be replaced with modal UI
+      const newName = prompt("Worker name:");
+      if (newName === null) return; // cancel
+      const newPhone = prompt("Phone number:", "");
+      if (newPhone === null) return;
+      const newDailyWage = prompt("Daily wage:", "");
+      if (newDailyWage === null) return;
+
+      await axios.put(
+        `http://localhost:5000/api/workers/${id}`,
+        { name: newName, phone: newPhone, dailyWage: Number(newDailyWage) },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      fetchWorkers();
+      alert("Worker updated");
+    } catch (error) {
+      console.log(error);
+      alert("Failed to update worker");
     }
   };
 
@@ -172,56 +201,71 @@ function Dashboard() {
     .reduce((sum, item) => sum + item.wageForDay, 0);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="p-4 md:p-8">
       {/* Header */}
-      <div className="bg-white p-6 rounded-xl shadow-md flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Contractor Dashboard</h1>
+      <div className="bg-gray-50 p-6 rounded-xl shadow-md flex justify-between items-center">
+        <h1 className="text-2xl md:text-3xl font-bold text-black">
+          Contractor Dashboard
+        </h1>
 
         <button
           onClick={handleLogout}
-          className="bg-black text-white px-4 py-2 rounded-lg"
+          className="bg-black text-white px-3 md:px-4 py-2 rounded-lg"
         >
           Logout
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <h2 className="text-xl font-bold">Total Workers</h2>
-
-          <p className="text-3xl mt-2">{workers.length}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+        <div className="bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+          <h2 className="text-sm font-medium text-gray-600">Total Workers</h2>
+          <p className="text-2xl md:text-3xl mt-1 font-bold">
+            {workers.length}
+          </p>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <h2 className="text-xl font-bold">Present</h2>
-
-          <p className="text-3xl mt-2 text-green-600">{totalPresent}</p>
+        <div className="bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+          <h2 className="text-sm font-medium text-gray-600">Present</h2>
+          <p className="text-2xl md:text-3xl mt-1 font-bold text-green-600">
+            {totalPresent}
+          </p>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <h2 className="text-xl font-bold">Absent</h2>
-
-          <p className="text-3xl mt-2 text-yellow-600">{totalAbsent}</p>
+        <div className="bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+          <h2 className="text-sm font-medium text-gray-600">Absent</h2>
+          <p className="text-2xl md:text-3xl mt-1 font-bold text-yellow-600">
+            {totalAbsent}
+          </p>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <h2 className="text-xl font-bold">Total Wages</h2>
-
-          <p className="text-3xl mt-2">₹{totalWages}</p>
+        <div className="bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+          <h2 className="text-sm font-medium text-gray-600">
+            Total Earnings Recorded
+          </h2>
+          <p className="text-2xl md:text-3xl mt-1 font-bold">₹{totalWages}</p>
         </div>
       </div>
 
       {/* Add Worker Form */}
-      <div className="mt-8 bg-white p-6 rounded-xl shadow-md max-w-lg">
-        <h2 className="text-2xl font-semibold mb-4">Add Worker</h2>
+      <div className="mt-8 bg-gray-50 p-4 md:p-8 rounded-xl shadow-md w-full max-w-lg">
+        <h2 className="text-2xl font-semibold mb-4 text-black">Add Worker</h2>
 
         <form onSubmit={handleAddWorker}>
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Search worker..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full border p-3 rounded-lg mb-4 bg-white"
+            />
+          </div>
           <input
             type="text"
             placeholder="Worker Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border p-3 rounded mb-4"
+            className="w-full border p-3 rounded-lg mb-4 bg-white"
           />
 
           <input
@@ -229,7 +273,7 @@ function Dashboard() {
             placeholder="Phone Number"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full border p-3 rounded mb-4"
+            className="w-full border p-3 rounded-lg mb-4 bg-white"
           />
 
           <input
@@ -237,106 +281,127 @@ function Dashboard() {
             placeholder="Daily Wage"
             value={dailyWage}
             onChange={(e) => setDailyWage(e.target.value)}
-            className="w-full border p-3 rounded mb-4"
+            className="w-full border p-3 rounded-lg mb-4 bg-white"
           />
 
           <button
             type="submit"
-            className="w-full bg-black text-white p-3 rounded-lg"
+            className="w-full bg-black text-white p-3 rounded"
           >
-            Add Worker
+            {editingWorker ? "Update Worker" : "Add Worker"}
           </button>
         </form>
       </div>
 
+      {/* attendance history */}
       <div className="mt-10">
-        <h2 className="text-2xl font-bold mb-4">Attendance History</h2>
+        <h2 className="text-2xl font-bold mb-4 text-black">
+          Attendance History
+        </h2>
 
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-black text-white">
-              <tr>
-                <th className="p-4 text-left">Worker</th>
+        <div className="bg-gray-50 rounded-xl shadow-md overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-black text-white">
+                <tr>
+                  <th className="p-4 text-left">Worker</th>
 
-                <th className="p-4 text-left">Status</th>
+                  <th className="p-4 text-left">Status</th>
 
-                <th className="p-4 text-left">Wage</th>
+                  <th className="p-4 text-left">Wage</th>
 
-                <th className="p-4 text-left">Date</th>
-              </tr>
-            </thead>
+                  <th className="p-4 text-left">Date</th>
+                </tr>
+              </thead>
 
-            <tbody>
-              {attendance
-                .filter((item) => item.workerId)
-                .map((item) => (
-                  <tr key={item._id} className="border-b">
-                    <td className="p-4">{item.workerId?.name}</td>
+              <tbody>
+                {attendance
+                  .filter((item) => item.workerId)
+                  .map((item) => (
+                    <tr key={item._id} className="border-b">
+                      <td className="p-4">{item.workerId?.name}</td>
 
-                    <span
-                      className={
-                        item.status === "Present"
-                          ? "text-green-600 font-bold"
-                          : "text-yellow-600 font-bold"
-                      }
-                    >
-                      {item.status}
-                    </span>
+                      <td className="p-4">
+                        <span
+                          className={
+                            item.status === "Present"
+                              ? "text-green-600 font-bold"
+                              : "text-yellow-600 font-bold"
+                          }
+                        >
+                          {item.status}
+                        </span>
+                      </td>
 
-                    <td className="p-4">₹{item.wageForDay}</td>
+                      <td className="p-4">₹{item.wageForDay}</td>
 
-                    <td className="p-4">
-                      {new Date(item.date).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+                      <td className="p-4">
+                        {new Date(item.date).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       {/* Workers List */}
       <div className="mt-8">
-        <h2 className="text-2xl font-bold mb-4">Workers List</h2>
+        <h2 className="text-2xl font-bold mb-4 text-black">Workers List</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {workers.length === 0 ? (
-            <p className="text-gray-500">No workers added yet.</p>
+            <div className="bg-gray-50 p-6 rounded-xl shadow-md">
+              <p className="mt-2 text-gray-700">
+                No workers found. Add your first worker above.
+              </p>
+            </div>
           ) : (
-            workers.map((worker) => (
-              // existing card
-              <div
-                key={worker._id}
-                className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition"
-              >
-                <h3 className="text-2xl font-bold mb-2">{worker.name}</h3>
-                <p className="text-lg mt-2">Phone: {worker.phone}</p>
-                <p className="text-lg">Daily Wage: ₹{worker.dailyWage}</p>
+            workers
+              .filter((w) =>
+                w.name?.toLowerCase().includes(searchQuery.toLowerCase()),
+              )
+              .map((worker) => (
+                <div
+                  key={worker._id}
+                  className="bg-gray-50 p-6 rounded-xl text-black shadow-md hover:shadow-xl transition duration-300 w-full"
+                >
+                  <h3 className="text-2xl font-bold mb-2">{worker.name}</h3>
+                  <p className="text-lg mt-2">Phone: {worker.phone}</p>
+                  <p className="text-lg">Daily Wage: ₹{worker.dailyWage}</p>
 
-                <div className="flex gap-3 mt-4 flex-wrap">
-                  <button
-                    onClick={() => handleDeleteWorker(worker._id)}
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg"
-                  >
-                    Delete
-                  </button>
+                  <div className="flex gap-3 mt-4 flex-wrap">
+                    <button
+                      onClick={() => handleEditWorker(worker._id)}
+                      className="bg-blue-500 text-white px-3 md:px-4 py-2 rounded-lg"
+                    >
+                      Edit
+                    </button>
 
-                  <button
-                    onClick={() => handleAttendance(worker._id, "Present")}
-                    className="bg-green-500 text-white px-4 py-2 rounded-lg"
-                  >
-                    Present
-                  </button>
+                    <button
+                      onClick={() => handleDeleteWorker(worker._id)}
+                      className="bg-red-500 text-white px-3 md:px-4 py-2 rounded-lg"
+                    >
+                      Delete
+                    </button>
 
-                  <button
-                    onClick={() => handleAttendance(worker._id, "Absent")}
-                    className="bg-yellow-500 text-white px-4 py-2 rounded-lg"
-                  >
-                    Absent
-                  </button>
+                    <button
+                      onClick={() => handleAttendance(worker._id, "Present")}
+                      className="bg-green-500 text-white px-3 md:px-4 py-2 rounded-lg"
+                    >
+                      Present
+                    </button>
+
+                    <button
+                      onClick={() => handleAttendance(worker._id, "Absent")}
+                      className="bg-yellow-500 text-black px-3 md:px-4 py-2 rounded-lg"
+                    >
+                      Absent
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))
+              ))
           )}
         </div>
       </div>
