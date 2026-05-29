@@ -36,12 +36,19 @@ A full-stack MERN application designed for contractors to manage workers, track 
 
 ### Contractor Dashboard
 
+<img width="1365" height="645" alt="contractor-dashboard png" src="https://github.com/user-attachments/assets/b492b633-4c66-4485-9330-ecadda0ac04c" />
+<img width="1365" height="648" alt="contractor-dashboard png (2)" src="https://github.com/user-attachments/assets/d0337104-bde6-4c62-9f25-5536d87ff437" />
+
+
 - Worker Management
 - Attendance Register
 - Wage Summary
 - PDF Export
 
 ### Worker Dashboard
+
+<img width="1362" height="643" alt="worker-dashboard png" src="https://github.com/user-attachments/assets/6f9ad9ce-5a6a-44e6-966f-cebd927165ba" />
+
 
 - Personal Attendance Records
 - Earnings Summary
@@ -70,6 +77,7 @@ A full-stack MERN application designed for contractors to manage workers, track 
 - Mongoose
 
 ### PDF Generation
+<img width="445" height="588" alt="pdf-reports png" src="https://github.com/user-attachments/assets/34bf485c-ee62-4c75-973b-825dc738dfe2" />
 
 - jsPDF
 - jspdf-autotable
