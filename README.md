@@ -1,4 +1,7 @@
 # 💼 Daily Wage Tracker
+
+A workforce management platform for contractors to track attendance, wages, and worker productivity.
+
 <img width="1365" height="645" alt="contractor-dashboard png" src="https://github.com/user-attachments/assets/3476b57f-7922-4dd0-8a42-b155734ee601" />
 <img width="1365" height="648" alt="contractor-dashboard png (2)" src="https://github.com/user-attachments/assets/f3622a6a-a96b-413b-8fab-e8368d9b50f3" />
 
