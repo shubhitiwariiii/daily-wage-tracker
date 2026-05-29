@@ -54,7 +54,8 @@ A full-stack MERN application designed for contractors to manage workers, track 
 
 ### Worker Dashboard
 
-<img width="1362" height="643" alt="worker-dashboard png" src="https://github.com/user-attachments/assets/6f9ad9ce-5a6a-44e6-966f-cebd927165ba" />
+<img width="1364" height="642" alt="worker-dashboard png" src="https://github.com/user-attachments/assets/5c695239-6d9f-431d-84be-eaa2a30c3980" />
+
 
 
 - Personal Attendance Records
