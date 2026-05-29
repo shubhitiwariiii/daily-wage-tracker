@@ -26,7 +26,7 @@ function Dashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.get("http://localhost:5000/api/workers", {
+      const res = await axios.get("https://daily-wage-tracker-ima6.onrender.com/api/workers", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -42,7 +42,7 @@ function Dashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.get("http://localhost:5000/api/attendance", {
+      const res = await axios.get("https://daily-wage-tracker-ima6.onrender.com/api/attendance", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -59,7 +59,7 @@ function Dashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.delete(`http://localhost:5000/api/workers/${id}`, {
+      await axios.delete(`https://daily-wage-tracker-ima6.onrender.com/api/attendanc${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -90,7 +90,7 @@ function Dashboard() {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        "http://localhost:5000/api/attendance",
+        "https://daily-wage-tracker-ima6.onrender.com/",
         {
           workerId,
           status,
@@ -127,7 +127,7 @@ function Dashboard() {
       if (editingWorker) {
         // update existing worker
         await axios.put(
-          `http://localhost:5000/api/workers/${editingWorker._id}`,
+          `https://daily-wage-tracker-ima6.onrender.com/api/workers${editingWorker._id}`,
           {
             name,
             phone,
@@ -144,7 +144,7 @@ function Dashboard() {
       } else {
         // create new worker
         await axios.post(
-          "http://localhost:5000/api/workers",
+          "https://daily-wage-tracker-ima6.onrender.com/",
           {
             name,
             phone,

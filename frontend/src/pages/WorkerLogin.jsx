@@ -12,9 +12,8 @@ function WorkerLogin() {
 
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/workers/phone/${phone}`,
+        `https://daily-wage-tracker-ima6.onrender.com/api/workers/phone/${phone}`,
       );
-
       localStorage.setItem("worker", JSON.stringify(res.data));
 
       navigate("/worker-dashboard");
@@ -39,7 +38,10 @@ function WorkerLogin() {
             className="w-full border p-3 rounded-lg mb-4 bg-white"
           />
 
-          <button type="submit" className="w-full bg-black text-white p-3 rounded-lg">
+          <button
+            type="submit"
+            className="w-full bg-black text-white p-3 rounded-lg"
+          >
             Login
           </button>
         </form>

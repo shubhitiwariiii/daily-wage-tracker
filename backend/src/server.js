@@ -13,7 +13,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["https://daily-wage-tracker-ima6.onrender.com/"],
     credentials: true,
   }),
 );

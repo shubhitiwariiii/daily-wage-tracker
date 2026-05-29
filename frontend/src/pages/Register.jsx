@@ -14,7 +14,7 @@ function Register() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/register", {
+      const res = await axios.post("https://daily-wage-tracker-ima6.onrender.com/api/auth/register", {
         name,
         phone,
         password,

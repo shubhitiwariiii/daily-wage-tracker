@@ -11,9 +11,21 @@ function WorkerDashboard() {
 
     navigate("/worker-login");
   };
+
   const fetchAttendance = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/attendance");
+      const worker = JSON.parse(localStorage.getItem("worker"));
+
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(
+        "https://daily-wage-tracker-ima6.onrender.com/api/attendance",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
       const workerAttendance = res.data.filter(
         (item) => item.workerId?._id === worker._id,
@@ -29,21 +41,25 @@ function WorkerDashboard() {
     fetchAttendance();
   }, []);
 
-  const totalPresent = attendance.filter(
+  const presentDays = attendance.filter(
     (item) => item.status === "Present",
   ).length;
 
-  const totalAbsent = attendance.filter(
+  const absentDays = attendance.filter(
     (item) => item.status === "Absent",
   ).length;
 
-  const totalWages = attendance.reduce((sum, item) => sum + item.wageForDay, 0);
+  const totalEarned = attendance
+    .filter((item) => item.status === "Present")
+    .reduce((sum, item) => sum + item.wageForDay, 0);
 
   return (
     <div className="min-h-screen p-4 md:p-8">
       <div className="bg-gray-50 p-6 rounded-xl shadow-md">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl md:text-3xl text-black font-bold">Worker Dashboard</h1>
+          <h1 className="text-2xl md:text-3xl text-black font-bold">
+            Worker Dashboard
+          </h1>
 
           <button
             onClick={handleLogout}
@@ -64,60 +80,81 @@ function WorkerDashboard() {
           <div className="bg-gray-50 p-6 rounded-xl shadow-md">
             <h2 className="text-xl text-black font-bold">Present Days</h2>
 
-            <p className="text-2xl md:text-3xl mt-2 text-green-600">{totalPresent}</p>
+            <p className="text-2xl md:text-3xl mt-2 text-green-600">
+              {presentDays}
+            </p>
           </div>
 
           <div className="bg-gray-50 p-6 rounded-xl shadow-md">
             <h2 className="text-xl text-black font-bold">Absent Days</h2>
 
-            <p className="text-2xl md:text-3xl mt-2 text-yellow-600">{totalAbsent}</p>
+            <p className="text-2xl md:text-3xl mt-2 text-yellow-600">
+              {absentDays}
+            </p>
           </div>
 
           <div className="bg-gray-50 p-6 rounded-xl shadow-md">
             <h2 className="text-xl text-black font-bold">Total Earned</h2>
 
-            <p className="text-2xl md:text-3xl text-black mt-2">₹{totalWages}</p>
+            <p className="text-2xl md:text-3xl text-black mt-2">
+              ₹{totalEarned}
+            </p>
           </div>
-
           <div className="mt-10">
-            <h2 className="text-2xl text-black font-bold mb-4">Attendance History</h2>
+            <h2 className="text-2xl text-black font-bold mb-4">
+              Attendance History
+            </h2>
 
-            <div className="bg-gray-50 rounded-xl shadow-md overflow-hidden">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm md:text-base">
-                <thead className="bg-black text-white">
-                  <tr>
-                    <th className="p-4 text-left">Status</th>
-
-                    <th className="p-4 text-left">Wage</th>
-
-                    <th className="p-4 text-left">Date</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {attendance.map((item) => (
-                    <tr key={item._id} className="border-b">
-                      <td className="p-4">
-                        <span
-                          className={
-                            item.status === "Present"
-                              ? "text-green-600 font-bold"
-                              : "text-yellow-600 font-bold"
-                          }
-                        >
-                          {item.status}
-                        </span>
-                      </td>
-
-                      <td className="p-4">₹{item.wageForDay}</td>
-
-                      <td className="p-4">
-                        {new Date(item.date).toLocaleDateString()}
-                      </td>
+                  <thead>
+                    <tr className="bg-black text-white">
+                      <th className="p-4 text-left">Date</th>
+                      <th className="p-4 text-left">Status</th>
+                      <th className="p-4 text-left">Wage</th>
                     </tr>
-                  ))}
-                </tbody>
+                  </thead>
+
+                  <tbody>
+                    {attendance.length > 0 ? (
+                      attendance.map((item) => (
+                        <tr
+                          key={item._id}
+                          className="border-b hover:bg-gray-50 transition"
+                        >
+                          <td className="p-4">
+                            {new Date(item.date).toLocaleDateString()}
+                          </td>
+
+                          <td className="p-4">
+                            <span
+                              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                item.status === "Present"
+                                  ? "bg-green-100 text-green-700"
+                                  : "bg-red-100 text-red-700"
+                              }`}
+                            >
+                              {item.status}
+                            </span>
+                          </td>
+
+                          <td className="p-4 font-medium">
+                            ₹{item.wageForDay}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="3"
+                          className="text-center py-6 text-gray-500"
+                        >
+                          No attendance records found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
                 </table>
               </div>
             </div>
