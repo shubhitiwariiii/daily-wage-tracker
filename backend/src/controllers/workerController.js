@@ -90,7 +90,7 @@ const updateWorker = async (req, res) => {
     const worker = await Worker.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true }
+      { returnDocument: "after" }
     );
 
     res.json(worker);

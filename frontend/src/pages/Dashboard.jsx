@@ -1,3 +1,5 @@
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -69,31 +71,18 @@ function Dashboard() {
     }
   };
 
-  // Edit worker
-  const handleEditWorker = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
+  // Edit worker: populate form for updating
+  const handleEditWorker = (workerId) => {
+    const worker = workers.find((w) => w._id === workerId);
+    if (!worker) return;
 
-      // Simple prompt-based edit - can be replaced with modal UI
-      const newName = prompt("Worker name:");
-      if (newName === null) return; // cancel
-      const newPhone = prompt("Phone number:", "");
-      if (newPhone === null) return;
-      const newDailyWage = prompt("Daily wage:", "");
-      if (newDailyWage === null) return;
+    setEditingWorker(worker);
+    setName(worker.name || "");
+    setPhone(worker.phone || "");
+    setDailyWage(worker.dailyWage ?? "");
 
-      await axios.put(
-        `http://localhost:5000/api/workers/${id}`,
-        { name: newName, phone: newPhone, dailyWage: Number(newDailyWage) },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-
-      fetchWorkers();
-      alert("Worker updated");
-    } catch (error) {
-      console.log(error);
-      alert("Failed to update worker");
-    }
+    // scroll to form for convenience
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleAttendance = async (workerId, status) => {
@@ -128,40 +117,61 @@ function Dashboard() {
     fetchAttendance();
   }, []);
 
-  // Add worker
+  // Add or update worker
   const handleAddWorker = async (e) => {
     e.preventDefault();
 
     try {
       const token = localStorage.getItem("token");
 
-      await axios.post(
-        "http://localhost:5000/api/workers",
-        {
-          name,
-          phone,
-          dailyWage,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+      if (editingWorker) {
+        // update existing worker
+        await axios.put(
+          `http://localhost:5000/api/workers/${editingWorker._id}`,
+          {
+            name,
+            phone,
+            dailyWage: Number(dailyWage),
           },
-        },
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
 
-      alert("Worker Added");
+        alert("Worker Updated");
+      } else {
+        // create new worker
+        await axios.post(
+          "http://localhost:5000/api/workers",
+          {
+            name,
+            phone,
+            dailyWage: Number(dailyWage),
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        alert("Worker Added");
+      }
 
       // Refresh workers list
       fetchWorkers();
 
-      // Clear form
+      // Clear form and editing state
       setName("");
       setPhone("");
       setDailyWage("");
+      setEditingWorker(null);
     } catch (error) {
       console.log(error);
 
-      alert("Failed to add worker");
+      alert("Failed to save worker");
     }
   };
 
@@ -199,6 +209,156 @@ function Dashboard() {
       );
     })
     .reduce((sum, item) => sum + item.wageForDay, 0);
+
+  const formatCurrency = (amount) => `Rs. ${amount.toLocaleString("en-IN")}`;
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    const now = new Date();
+
+    const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
+    // ======================
+    // Header
+    // ======================
+    doc.setFontSize(22);
+    doc.setTextColor(0, 0, 0);
+
+    doc.text("Daily Wage Tracker", 105, 18, {
+      align: "center",
+    });
+
+    doc.setFontSize(14);
+
+    doc.text("Attendance Register Report", 105, 27, {
+      align: "center",
+    });
+
+    // Generated Date
+    doc.setFontSize(10);
+
+    doc.text(
+      `Generated On: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,
+      14,
+      40,
+    );
+
+    // Divider
+    doc.line(14, 45, 196, 45);
+
+    // ======================
+    // Summary
+    // ======================
+    doc.setFontSize(11);
+
+    doc.text(`Total Workers: ${workers.length}`, 14, 55);
+
+    doc.text(`Monthly Wages: ${formatCurrency(totalWages)}`, 14, 63);
+
+    doc.text(
+      `Month: ${now.toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      })}`,
+      14,
+      71,
+    );
+
+    // ======================
+    // Table Data
+    // ======================
+    const tableData = attendanceRegister.map((row) => [
+      capitalize(row.worker.name),
+      row.presentDays,
+      row.absentDays,
+      formatCurrency(row.totalEarned),
+    ]);
+
+    autoTable(doc, {
+      startY: 80,
+
+      head: [["Worker", "Present Days", "Absent Days", "Total Earned"]],
+
+      body: tableData,
+
+      headStyles: {
+        fillColor: [0, 0, 0],
+        textColor: [255, 255, 255],
+        halign: "center",
+      },
+
+      styles: {
+        halign: "center",
+        fontSize: 10,
+      },
+
+      alternateRowStyles: {
+        fillColor: [245, 245, 245],
+      },
+
+      columnStyles: {
+        0: {
+          halign: "left",
+        },
+      },
+    });
+
+    // ======================
+    // Footer
+    // ======================
+    const pageCount = doc.internal.getNumberOfPages();
+
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+
+      const pageHeight = doc.internal.pageSize.height;
+
+      doc.setFontSize(9);
+      doc.setTextColor(120);
+
+      doc.text(
+        `Generated by Daily Wage Tracker | Page ${i} of ${pageCount}`,
+        105,
+        pageHeight - 10,
+        { align: "center" },
+      );
+    }
+
+    doc.save("attendance-register.pdf");
+  };
+
+  const uniqueDates = [
+    ...new Set(
+      attendance.map((item) => new Date(item.date).toLocaleDateString()),
+    ),
+  ].sort();
+
+  const attendanceRegister = workers.map((worker) => {
+    const workerAttendance = attendance.filter(
+      (item) => item.workerId?._id === worker._id,
+    );
+
+    const presentDays = workerAttendance.filter(
+      (item) => item.status === "Present",
+    ).length;
+
+    const absentDays = workerAttendance.filter(
+      (item) => item.status === "Absent",
+    ).length;
+
+    const totalEarned = workerAttendance
+      .filter((item) => item.status === "Present")
+      .reduce((sum, item) => sum + item.wageForDay, 0);
+
+    return {
+      worker,
+      workerAttendance,
+      presentDays,
+      absentDays,
+      totalEarned,
+    };
+  });
 
   return (
     <div className="p-4 md:p-8">
@@ -242,7 +402,9 @@ function Dashboard() {
           <h2 className="text-sm font-medium text-gray-600">
             Total Earnings Recorded
           </h2>
-          <p className="text-2xl md:text-3xl mt-1 font-bold">₹{totalWages}</p>
+          <p className="text-2xl md:text-3xl mt-1 font-bold">
+            {formatCurrency(totalWages)}
+          </p>
         </div>
       </div>
 
@@ -293,56 +455,74 @@ function Dashboard() {
         </form>
       </div>
 
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={generatePDF}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+        >
+          Export PDF
+        </button>
+      </div>
+
       {/* attendance history */}
       <div className="mt-10">
-        <h2 className="text-2xl font-bold mb-4 text-black">
-          Attendance History
-        </h2>
+        <h2 className="text-2xl font-bold mb-4">Attendance Register</h2>
 
-        <div className="bg-gray-50 rounded-xl shadow-md overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-black text-white">
-                <tr>
-                  <th className="p-4 text-left">Worker</th>
+        <div className="overflow-x-auto bg-gray-50 rounded-xl shadow-md">
+          <table className="min-w-full">
+            <thead className="bg-black text-white">
+              <tr>
+                <th className="p-4">Worker</th>
 
-                  <th className="p-4 text-left">Status</th>
+                {uniqueDates.map((date) => (
+                  <th key={date} className="p-4">
+                    {date}
+                  </th>
+                ))}
 
-                  <th className="p-4 text-left">Wage</th>
+                <th className="p-4">Present</th>
+                <th className="p-4">Absent</th>
+                <th className="p-4">Total Earned</th>
+              </tr>
+            </thead>
 
-                  <th className="p-4 text-left">Date</th>
+            <tbody>
+              {attendanceRegister.map((row) => (
+                <tr key={row.worker._id} className="border-b">
+                  <td className="p-4 font-bold">{row.worker.name}</td>
+
+                  {uniqueDates.map((date) => {
+                    const record = row.workerAttendance.find(
+                      (item) =>
+                        new Date(item.date).toLocaleDateString() === date,
+                    );
+
+                    return (
+                      <td key={date} className="p-4 text-center">
+                        {record
+                          ? record.status === "Present"
+                            ? "P"
+                            : "A"
+                          : "-"}
+                      </td>
+                    );
+                  })}
+
+                  <td className="p-4 text-green-600 font-bold">
+                    {row.presentDays}
+                  </td>
+
+                  <td className="p-4 text-yellow-600 font-bold">
+                    {row.absentDays}
+                  </td>
+
+                  <td className="p-4 font-bold">
+                    {formatCurrency(row.totalEarned)}
+                  </td>
                 </tr>
-              </thead>
-
-              <tbody>
-                {attendance
-                  .filter((item) => item.workerId)
-                  .map((item) => (
-                    <tr key={item._id} className="border-b">
-                      <td className="p-4">{item.workerId?.name}</td>
-
-                      <td className="p-4">
-                        <span
-                          className={
-                            item.status === "Present"
-                              ? "text-green-600 font-bold"
-                              : "text-yellow-600 font-bold"
-                          }
-                        >
-                          {item.status}
-                        </span>
-                      </td>
-
-                      <td className="p-4">₹{item.wageForDay}</td>
-
-                      <td className="p-4">
-                        {new Date(item.date).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -369,7 +549,9 @@ function Dashboard() {
                 >
                   <h3 className="text-2xl font-bold mb-2">{worker.name}</h3>
                   <p className="text-lg mt-2">Phone: {worker.phone}</p>
-                  <p className="text-lg">Daily Wage: ₹{worker.dailyWage}</p>
+                  <p className="text-lg">
+                    Daily Wage: {formatCurrency(worker.dailyWage)}
+                  </p>
 
                   <div className="flex gap-3 mt-4 flex-wrap">
                     <button
