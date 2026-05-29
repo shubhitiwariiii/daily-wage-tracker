@@ -13,10 +13,14 @@ connectDB();
 
 app.use(
   cors({
-    origin: ["https://daily-wage-tracker-ima6.onrender.com/"],
+    origin: [
+      "http://localhost:5173",
+      "https://daily-wage-tracker-92en.vercel.app",
+    ],
     credentials: true,
-  }),
+  })
 );
+
 app.use(express.json());
 
 app.use("/api/workers", workerRoutes);

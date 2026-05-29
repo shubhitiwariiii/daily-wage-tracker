@@ -144,7 +144,7 @@ function Dashboard() {
       } else {
         // create new worker
         await axios.post(
-          "https://daily-wage-tracker-ima6.onrender.com/",
+          "https://daily-wage-tracker-ima6.onrender.com/api/workers",
           {
             name,
             phone,

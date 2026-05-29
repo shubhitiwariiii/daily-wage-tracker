@@ -13,10 +13,13 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("https://daily-wage-tracker-ima6.onrender.com/api/auth/login", {
-        phone,
-        password,
-      });
+      const res = await axios.post(
+        "https://daily-wage-tracker-ima6.onrender.com/api/auth/login",
+        {
+          phone,
+          password,
+        },
+      );
 
       localStorage.setItem("token", res.data.token);
 
@@ -24,13 +27,19 @@ function Login() {
 
       alert("Login Successful");
     } catch (error) {
-      alert("Login Failed");
+      console.log(error);
+      console.log(error.response?.data);
+
+      alert(error.response?.data?.message || error.message || "Login Failed");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <form onSubmit={handleLogin} className="bg-gray-50 p-8 rounded-xl shadow-md w-96">
+      <form
+        onSubmit={handleLogin}
+        className="bg-gray-50 p-8 rounded-xl shadow-md w-96"
+      >
         <h1 className="text-2xl font-bold text-black mb-6 text-center">
           Contractor Login
         </h1>
