@@ -1,157 +1,225 @@
-# Daily Wage Tracker
+# 💼 Daily Wage Tracker
 
-A full-stack web application for managing daily wage workers, attendance, and wage calculations digitally.
-
-## Problem Statement
-
-Millions of daily wage workers in India do not have:
-- Proper attendance records
-- Wage transparency
-- Digital proof of work
-- Payment tracking systems
-
-This project helps contractors manage workers digitally through a simple and scalable platform.
+A full-stack MERN application designed for contractors to manage workers, track daily attendance, calculate wages, and generate attendance reports.
 
 ---
 
-# Features
+## 🚀 Features
 
-## Current Features
+### 👷 Contractor Features
 
-- Add Workers
-- Get All Workers
-- MongoDB Database Integration
-- REST API Backend
-- Express Server Setup
+- Contractor Registration & Login
+- JWT Authentication
+- Protected Routes
+- Add New Workers
+- Edit Worker Details
+- Delete Workers
+- Mark Daily Attendance (Present / Absent)
+- Attendance Register View
+- Monthly Wage Tracking
+- Search Workers
+- Export Attendance Reports as PDF
+- Responsive Mobile-Friendly UI
+
+### 👨‍🔧 Worker Features
+
+- Worker Login using Phone Number
+- Personal Dashboard
+- View Attendance History
+- View Present Days
+- View Absent Days
+- View Total Earnings
 
 ---
 
-# Upcoming Features
+## 📸 Screenshots
 
-- Attendance Tracking
-- Wage Calculation
-- Contractor Authentication
-- Worker Dashboard
-- WhatsApp/SMS Notifications
-- Payment History
-- Analytics Dashboard
+### Contractor Dashboard
+
+- Worker Management
+- Attendance Register
+- Wage Summary
+- PDF Export
+
+### Worker Dashboard
+
+- Personal Attendance Records
+- Earnings Summary
 
 ---
 
-# Tech Stack
+## 🛠️ Tech Stack
 
-## Backend
+### Frontend
+
+- React.js
+- Vite
+- Axios
+- Tailwind CSS
+
+### Backend
+
 - Node.js
 - Express.js
+- JWT Authentication
+- Bcrypt.js
+
+### Database
+
 - MongoDB Atlas
 - Mongoose
 
-## Frontend (Upcoming)
-- React.js
-- Tailwind CSS
+### PDF Generation
+
+- jsPDF
+- jspdf-autotable
 
 ---
 
-# Project Structure
+## 📂 Project Structure
 
 ```bash
 daily-wage-tracker/
 │
-├── backend/
+├── frontend/
 │   ├── src/
-│   │   ├── config/
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   ├── models/
-│   │   ├── routes/
-│   │   └── server.js
+│   │   ├── pages/
+│   │   ├── components/
+│   │   ├── assets/
+│   │   └── App.jsx
 │   │
-│   ├── .env
-│   ├── .gitignore
 │   └── package.json
 │
-├── frontend/
-│
-├── docs/
-│   └── project-plan.md
+├── backend/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── routes/
+│   │   ├── models/
+│   │   ├── middleware/
+│   │   └── server.js
+│   │
+│   └── package.json
 │
 └── README.md
 ```
 
 ---
 
-# API Endpoints
+## ⚙️ Installation
 
-## Workers API
-
-### Add Worker
-
-```http
-POST /api/workers
-```
-
-### Get All Workers
-
-```http
-GET /api/workers
-```
-
----
-
-# Installation
-
-## Clone Repository
+### Clone Repository
 
 ```bash
 git clone https://github.com/your-username/daily-wage-tracker.git
+
+cd daily-wage-tracker
 ```
 
-## Backend Setup
+### Backend Setup
 
 ```bash
 cd backend
+
 npm install
+```
+
+Create a `.env` file:
+
+```env
+PORT=5000
+
+MONGO_URI=your_mongodb_connection_string
+
+JWT_SECRET=your_jwt_secret
+```
+
+Start backend:
+
+```bash
+npm run dev
+```
+
+### Frontend Setup
+
+```bash
+cd frontend
+
+npm install
+
 npm run dev
 ```
 
 ---
 
-# Environment Variables
+## 📊 Attendance Register
 
-Create `.env` inside backend folder:
+The application provides a contractor-friendly attendance register:
 
-```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-```
+| Worker | Date | Status |
+|---------|---------|---------|
+| Jignesh | 28/05/2026 | Present |
+| Mahesh | 29/05/2026 | Present |
 
----
+Along with:
 
-# Current Progress
-
-- [x] Backend Setup
-- [x] MongoDB Atlas Connection
-- [x] Worker Model
-- [x] Add Worker API
-- [x] Get Workers API
-- [x] Attendance System
-- [x] Authentication
-- [ ] Frontend Development
-- [ ] Deployment
+- Present Day Count
+- Absent Day Count
+- Total Earnings Calculation
 
 ---
 
-# Future Scope
+## 📄 PDF Export
 
-- Multi-language support (Hindi/English)
-- QR-based worker verification
-- Payroll exports
-- SMS alerts
-- Progressive Web App (PWA)
-- Admin analytics dashboard
+Generate professional attendance reports including:
+
+- Total Workers
+- Monthly Wages
+- Present Days
+- Absent Days
+- Total Earned Per Worker
+- Generated Date & Time
 
 ---
 
-# Author
+## 🔒 Authentication
 
-Shubhi Tiwari
+The application uses:
+
+- JWT Tokens
+- Protected Routes
+- Password Hashing with Bcrypt
+
+---
+
+## 📱 Responsive Design
+
+Fully responsive layout supporting:
+
+- Desktop
+- Tablet
+- Mobile Devices
+
+---
+
+## 🎯 Future Improvements
+
+- OTP-Based Worker Login
+- Attendance Filters (Today / Week / Month)
+- Analytics Dashboard
+- Dark Mode
+- Multi-Contractor Support Enhancements
+- Email / WhatsApp Attendance Reports
+
+---
+
+## 👨‍💻 Author
+
+**Shubhi Tiwari**
+
+Built as a MERN Stack project for worker attendance and wage management.
+
+---
+
+## ⭐ Support
+
+If you found this project useful, consider giving it a star ⭐ on GitHub.
