@@ -2,8 +2,10 @@
 
 A workforce management platform for contractors to track attendance, wages, and worker productivity.
 
-<img width="1365" height="645" alt="contractor-dashboard png" src="https://github.com/user-attachments/assets/3476b57f-7922-4dd0-8a42-b155734ee601" />
-<img width="1365" height="648" alt="contractor-dashboard png (2)" src="https://github.com/user-attachments/assets/f3622a6a-a96b-413b-8fab-e8368d9b50f3" />
+<img width="1360" height="636" alt="Screenshot 2026-06-09 231900" src="https://github.com/user-attachments/assets/fd8c3367-07b8-4d2d-bfac-63e3881788a4" />
+<img width="1355" height="635" alt="Screenshot 2026-06-09 231909" src="https://github.com/user-attachments/assets/28b73bde-db37-46a3-a4bd-ca3d366e560b" />
+
+
 
 
 
@@ -42,9 +44,9 @@ A full-stack MERN application designed for contractors to manage workers, track 
 ## 📸 Screenshots
 
 ### Contractor Dashboard
+<img width="1360" height="636" alt="Screenshot 2026-06-09 231900" src="https://github.com/user-attachments/assets/fd8c3367-07b8-4d2d-bfac-63e3881788a4" />
+<img width="1355" height="635" alt="Screenshot 2026-06-09 231909" src="https://github.com/user-attachments/assets/28b73bde-db37-46a3-a4bd-ca3d366e560b" />
 
-<img width="1365" height="645" alt="contractor-dashboard png" src="https://github.com/user-attachments/assets/b492b633-4c66-4485-9330-ecadda0ac04c" />
-<img width="1365" height="648" alt="contractor-dashboard png (2)" src="https://github.com/user-attachments/assets/d0337104-bde6-4c62-9f25-5536d87ff437" />
 
 
 - Worker Management
@@ -54,7 +56,7 @@ A full-stack MERN application designed for contractors to manage workers, track 
 
 ### Worker Dashboard
 
-<img width="1364" height="642" alt="worker-dashboard png" src="https://github.com/user-attachments/assets/5c695239-6d9f-431d-84be-eaa2a30c3980" />
+<img width="1364" height="642" alt="Screenshot 2026-06-09 232022" src="https://github.com/user-attachments/assets/436db712-c7e6-4f6a-9e7e-3b7463dc9ad1" />
 
 
 
