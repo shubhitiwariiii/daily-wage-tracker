@@ -32,17 +32,16 @@ function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <form onSubmit={handleRegister} className="bg-gray-50 p-4 md:p-8 rounded-xl shadow-md w-full max-w-md">
-        <h1 className="text-2xl md:text-3xl text-black font-bold mb-6 text-center">
-          Contractor Register
-        </h1>
+      {/* Register form uses `card` and shared input/button styles for consistency */}
+      <form onSubmit={handleRegister} className="card w-full max-w-md">
+        <h1 className="text-2xl md:text-3xl text-black font-bold mb-6 text-center">Contractor Register</h1>
 
         <input
           type="text"
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border p-3 rounded-lg mb-4 bg-white"
+          className="form-input mb-4"
         />
 
         <input
@@ -50,7 +49,7 @@ function Register() {
           placeholder="Phone Number"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="w-full border p-3 rounded-lg mb-4 bg-white"
+          className="form-input mb-4"
         />
 
         <input
@@ -58,18 +57,13 @@ function Register() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border p-3 rounded-lg mb-4 bg-white"
+          className="form-input mb-4"
         />
 
-        <button type="submit" className="w-full bg-black text-white p-3 rounded">
-          Register
-        </button>
+        <button type="submit" className="btn btn-primary w-full">Register</button>
 
-        <p className="mt-4 text-center">
-          Already have an account?{" "}
-          <Link to="/login" className="text-blue-500">
-            Login
-          </Link>
+        <p className="mt-4 text-center">Already have an account? {" "}
+          <Link to="/login" className="text-blue-600 font-medium">Login</Link>
         </p>
       </form>
     </div>

@@ -24,10 +24,9 @@ function WorkerLogin() {
 
   return (
     <div className="min-h-screen flex justify-center items-center">
-      <div className="bg-gray-50 p-4 md:p-8 rounded-xl shadow-md w-full max-w-md">
-        <h1 className="text-2xl md:text-3xl text-black font-bold mb-6 text-center">
-          Worker Login
-        </h1>
+      {/* Worker login reuses the same card and form tokens */}
+      <div className="card w-full max-w-md">
+        <h1 className="text-2xl md:text-3xl text-black font-bold mb-6 text-center">Worker Login</h1>
 
         <form onSubmit={handleLogin}>
           <input
@@ -35,15 +34,10 @@ function WorkerLogin() {
             placeholder="Phone Number"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full border p-3 rounded-lg mb-4 bg-white"
+            className="form-input mb-4"
           />
 
-          <button
-            type="submit"
-            className="w-full bg-black text-white p-3 rounded-lg"
-          >
-            Login
-          </button>
+          <button type="submit" className="btn btn-primary w-full">Login</button>
         </form>
       </div>
     </div>

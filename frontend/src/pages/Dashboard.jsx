@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// UI improvements:
+// - Use the global design system (`theme.css`) classes like `app-container`, `card`, and `stat-card`.
+// - Replace some utility clutter with semantic class names for a more premium, consistent look.
+
 function Dashboard() {
   const navigate = useNavigate();
 
@@ -26,11 +30,14 @@ function Dashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.get("https://daily-wage-tracker-ima6.onrender.com/api/workers", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await axios.get(
+        "https://daily-wage-tracker-ima6.onrender.com/api/workers",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       setWorkers(res.data);
     } catch (error) {
@@ -42,11 +49,14 @@ function Dashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.get("https://daily-wage-tracker-ima6.onrender.com/api/attendance", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await axios.get(
+        "https://daily-wage-tracker-ima6.onrender.com/api/attendance",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       setAttendance(res.data);
     } catch (error) {
@@ -59,11 +69,14 @@ function Dashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.delete(`https://daily-wage-tracker-ima6.onrender.com/api/attendanc${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      await axios.delete(
+        `https://daily-wage-tracker-ima6.onrender.com/api/workers/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       fetchWorkers();
     } catch (error) {
@@ -71,26 +84,25 @@ function Dashboard() {
     }
   };
 
-  // Edit worker: populate form for updating
-  const handleEditWorker = (workerId) => {
-    const worker = workers.find((w) => w._id === workerId);
-    if (!worker) return;
-
-    setEditingWorker(worker);
-    setName(worker.name || "");
-    setPhone(worker.phone || "");
-    setDailyWage(worker.dailyWage ?? "");
-
-    // scroll to form for convenience
+  // Edit worker: populate form with worker data for editing
+  const handleEditWorker = (id) => {
+    const w = workers.find((wk) => wk._id === id);
+    if (!w) return;
+    setEditingWorker(w);
+    setName(w.name || "");
+    setPhone(w.phone || "");
+    setDailyWage(w.dailyWage || "");
+    // scroll to top so user sees the edit form
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  //attendance updation
   const handleAttendance = async (workerId, status) => {
     try {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        "https://daily-wage-tracker-ima6.onrender.com/",
+        "https://daily-wage-tracker-ima6.onrender.com/api/attendance",
         {
           workerId,
           status,
@@ -103,7 +115,9 @@ function Dashboard() {
       );
 
       alert(`Attendance marked ${status}`);
+
       fetchAttendance();
+      fetchWorkers();
     } catch (error) {
       console.log(error);
 
@@ -127,7 +141,7 @@ function Dashboard() {
       if (editingWorker) {
         // update existing worker
         await axios.put(
-          `https://daily-wage-tracker-ima6.onrender.com/api/workers${editingWorker._id}`,
+          `https://daily-wage-tracker-ima6.onrender.com/api/workers/${editingWorker._id}`,
           {
             name,
             phone,
@@ -143,8 +157,8 @@ function Dashboard() {
         alert("Worker Updated");
       } else {
         // create new worker
-        await axios.post(
-          "https://daily-wage-tracker-ima6.onrender.com/api/workers",
+        await axios.put(
+          `https://daily-wage-tracker-ima6.onrender.com/api/workers/${editingWorker._id}`,
           {
             name,
             phone,
@@ -195,20 +209,24 @@ function Dashboard() {
 
   const currentYear = new Date().getFullYear();
 
+  // const totalWages = attendance
+  //   .filter((item) => {
+  //     if (!item.workerId || item.status !== "Present" || !item.date) {
+  //       return false;
+  //     }
+
+  //     const attendanceDate = new Date(item.date);
+
+  //     return (
+  //       attendanceDate.getMonth() === currentMonth &&
+  //       attendanceDate.getFullYear() === currentYear
+  //     );
+  //   })
+  //   .reduce((sum, item) => sum + item.wageForDay, 0);
+  
   const totalWages = attendance
-    .filter((item) => {
-      if (!item.workerId || item.status !== "Present" || !item.date) {
-        return false;
-      }
-
-      const attendanceDate = new Date(item.date);
-
-      return (
-        attendanceDate.getMonth() === currentMonth &&
-        attendanceDate.getFullYear() === currentYear
-      );
-    })
-    .reduce((sum, item) => sum + item.wageForDay, 0);
+  .filter((item) => item.status === "Present")
+  .reduce((sum, item) => sum + item.wageForDay, 0);
 
   const formatCurrency = (amount) => `Rs. ${amount.toLocaleString("en-IN")}`;
 
@@ -361,41 +379,33 @@ function Dashboard() {
   });
 
   return (
-    <div className="p-4 md:p-8">
-      {/* Header */}
-      <div className="bg-gray-50 p-6 rounded-xl shadow-md flex justify-between items-center">
-        <h1 className="text-2xl md:text-3xl font-bold text-black">
-          Contractor Dashboard
-        </h1>
+    // `app-container` centers content and limits max width for a cleaner layout
+    <div className="app-container">
+      {/* Header: use `card` + `header` to get consistent spacing and shadow */}
+      <div className="card header">
+        <h1 className="text-2xl md:text-3xl font-bold text-black">Contractor Dashboard</h1>
 
-        <button
-          onClick={handleLogout}
-          className="bg-black text-white px-3 md:px-4 py-2 rounded-lg"
-        >
+        {/* Logout styled using design-system buttons */}
+        <button onClick={handleLogout} className="btn btn-ghost">
           Logout
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-        <div className="bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
-          <h2 className="text-sm font-medium text-gray-600">Total Workers</h2>
-          <p className="text-2xl md:text-3xl mt-1 font-bold">
-            {workers.length}
-          </p>
+      {/* Quick stats: use semantic grid and stat-card for consistent visuals */}
+      <div className="stat-grid mt-8">
+        <div className="stat-card">
+          <h2 className="stat-title">Total Workers</h2>
+          <p className="stat-value">{workers.length}</p>
         </div>
 
-        <div className="bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
-          <h2 className="text-sm font-medium text-gray-600">Present</h2>
-          <p className="text-2xl md:text-3xl mt-1 font-bold text-green-600">
-            {totalPresent}
-          </p>
+        <div className="stat-card">
+          <h2 className="stat-title">Present</h2>
+          <p className="stat-value" style={{ color: 'var(--success)' }}>{totalPresent}</p>
         </div>
 
-        <div className="bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
-          <h2 className="text-sm font-medium text-gray-600">Absent</h2>
-          <p className="text-2xl md:text-3xl mt-1 font-bold text-yellow-600">
-            {totalAbsent}
-          </p>
+        <div className="stat-card">
+          <h2 className="stat-title">Absent</h2>
+          <p className="stat-value" style={{ color: 'var(--danger)' }}>{totalAbsent}</p>
         </div>
 
         <div className="bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
@@ -409,8 +419,9 @@ function Dashboard() {
       </div>
 
       {/* Add Worker Form */}
-      <div className="mt-8 bg-gray-50 p-4 md:p-8 rounded-xl shadow-md w-full max-w-lg">
-        <h2 className="text-2xl font-semibold mb-4 text-black">Add Worker</h2>
+      {/* Add / Edit Worker: card with consistent form controls */}
+      <div className="card mt-8 w-full max-w-lg">
+        <h2 className="text-2xl font-semibold mb-4 text-black">{editingWorker ? 'Edit Worker' : 'Add Worker'}</h2>
 
         <form onSubmit={handleAddWorker}>
           <div className="mb-4">
@@ -419,15 +430,16 @@ function Dashboard() {
               placeholder="Search worker..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full border p-3 rounded-lg mb-4 bg-white"
+              className="form-input mb-4"
             />
           </div>
+
           <input
             type="text"
             placeholder="Worker Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border p-3 rounded-lg mb-4 bg-white"
+            className="form-input mb-4"
           />
 
           <input
@@ -435,7 +447,7 @@ function Dashboard() {
             placeholder="Phone Number"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full border p-3 rounded-lg mb-4 bg-white"
+            className="form-input mb-4"
           />
 
           <input
@@ -443,23 +455,17 @@ function Dashboard() {
             placeholder="Daily Wage"
             value={dailyWage}
             onChange={(e) => setDailyWage(e.target.value)}
-            className="w-full border p-3 rounded-lg mb-4 bg-white"
+            className="form-input mb-4"
           />
 
-          <button
-            type="submit"
-            className="w-full bg-black text-white p-3 rounded"
-          >
+          <button type="submit" className="btn btn-primary w-full">
             {editingWorker ? "Update Worker" : "Add Worker"}
           </button>
         </form>
       </div>
 
       <div className="flex justify-end mb-4">
-        <button
-          onClick={generatePDF}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-        >
+        <button onClick={generatePDF} className="btn btn-primary">
           Export PDF
         </button>
       </div>
@@ -468,9 +474,9 @@ function Dashboard() {
       <div className="mt-10">
         <h2 className="text-2xl font-bold mb-4">Attendance Register</h2>
 
-        <div className="overflow-x-auto bg-gray-50 rounded-xl shadow-md">
-          <table className="min-w-full">
-            <thead className="bg-black text-white">
+        <div className="card overflow-x-auto">
+          <table className="table">
+            <thead>
               <tr>
                 <th className="p-4">Worker</th>
 
@@ -532,55 +538,26 @@ function Dashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {workers.length === 0 ? (
-            <div className="bg-gray-50 p-6 rounded-xl shadow-md">
-              <p className="mt-2 text-gray-700">
-                No workers found. Add your first worker above.
-              </p>
+            <div className="card">
+              <p className="mt-2 text-gray-700">No workers found. Add your first worker above.</p>
             </div>
           ) : (
             workers
-              .filter((w) =>
-                w.name?.toLowerCase().includes(searchQuery.toLowerCase()),
-              )
+              .filter((w) => w.name?.toLowerCase().includes(searchQuery.toLowerCase()))
               .map((worker) => (
-                <div
-                  key={worker._id}
-                  className="bg-gray-50 p-6 rounded-xl text-black shadow-md hover:shadow-xl transition duration-300 w-full"
-                >
+                <div key={worker._id} className="worker-card">
                   <h3 className="text-2xl font-bold mb-2">{worker.name}</h3>
                   <p className="text-lg mt-2">Phone: {worker.phone}</p>
-                  <p className="text-lg">
-                    Daily Wage: {formatCurrency(worker.dailyWage)}
-                  </p>
+                  <p className="text-lg">Daily Wage: {formatCurrency(worker.dailyWage)}</p>
 
-                  <div className="flex gap-3 mt-4 flex-wrap">
-                    <button
-                      onClick={() => handleEditWorker(worker._id)}
-                      className="bg-blue-500 text-white px-3 md:px-4 py-2 rounded-lg"
-                    >
-                      Edit
-                    </button>
+                  <div className="controls mt-4">
+                    <button onClick={() => handleEditWorker(worker._id)} className="btn btn-sm btn-primary">Edit</button>
 
-                    <button
-                      onClick={() => handleDeleteWorker(worker._id)}
-                      className="bg-red-500 text-white px-3 md:px-4 py-2 rounded-lg"
-                    >
-                      Delete
-                    </button>
+                    <button onClick={() => handleDeleteWorker(worker._id)} className="btn btn-sm btn-danger">Delete</button>
 
-                    <button
-                      onClick={() => handleAttendance(worker._id, "Present")}
-                      className="bg-green-500 text-white px-3 md:px-4 py-2 rounded-lg"
-                    >
-                      Present
-                    </button>
+                    <button onClick={() => handleAttendance(worker._id, "Present")} className="btn btn-sm btn-success">Present</button>
 
-                    <button
-                      onClick={() => handleAttendance(worker._id, "Absent")}
-                      className="bg-yellow-500 text-black px-3 md:px-4 py-2 rounded-lg"
-                    >
-                      Absent
-                    </button>
+                    <button onClick={() => handleAttendance(worker._id, "Absent")} className="btn btn-sm btn-warning">Absent</button>
                   </div>
                 </div>
               ))

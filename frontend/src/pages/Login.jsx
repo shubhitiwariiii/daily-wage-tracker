@@ -36,20 +36,17 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <form
-        onSubmit={handleLogin}
-        className="bg-gray-50 p-8 rounded-xl shadow-md w-96"
-      >
-        <h1 className="text-2xl font-bold text-black mb-6 text-center">
-          Contractor Login
-        </h1>
+      {/* Form uses `card` to get consistent padding, radius and shadow */}
+      <form onSubmit={handleLogin} className="card w-full max-w-md">
+        <h1 className="text-2xl font-bold text-black mb-6 text-center">Contractor Login</h1>
 
+        {/* Inputs use shared `.form-input` for consistent spacing and focus */}
         <input
           type="text"
           placeholder="Phone Number"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="w-full border p-3 rounded-lg mb-4 bg-white"
+          className="form-input mb-4"
         />
 
         <input
@@ -57,19 +54,16 @@ function Login() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border p-3 rounded-lg mb-4 bg-white"
+          className="form-input mb-4"
         />
 
-        <button
-          type="submit"
-          className="w-full bg-black text-white p-3 rounded"
-        >
+        <button type="submit" className="btn btn-primary w-full">
           Login
         </button>
 
         <p className="mt-4 text-center">
-          Don't have an account?{" "}
-          <Link to="/register" className="text-blue-500">
+          Don't have an account? {" "}
+          <Link to="/register" className="text-blue-600 font-medium">
             Register
           </Link>
         </p>
